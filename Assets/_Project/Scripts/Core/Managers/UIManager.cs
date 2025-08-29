@@ -9,12 +9,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CanvasGroup winResultPanel;
     [SerializeField] private CanvasGroup loseResultPanel;
     
-    [Header("Result UI Elements")]
-    [SerializeField] private Text winScoreText;
-    [SerializeField] private Text loseScoreText;
-    [SerializeField] private Text winRestartTimerText;
-    [SerializeField] private Text loseRestartTimerText;
-    
     [Header("Animation Settings")]
     [SerializeField] private float fadeDuration = 0.5f;
     
@@ -55,38 +49,15 @@ public class UIManager : MonoBehaviour
     {
         UIFader.FadeOut(quizPanel, fadeDuration);
         
-        // Get the quiz result
-        QuizResult result = QuizResultManager.GetResult();
+        var result = QuizResultManager.GetResult();
         
         if (result != null)
         {
-            // Update score text
-            string scoreText = $"Score: {result.correctAnswers}/{result.totalQuestions} ({result.ScorePercentage:F1}%)";
-            
-            if (result.Passed)
-            {
-                // Show win panel
-                winScoreText.text = scoreText;
-                UIFader.FadeIn(winResultPanel, fadeDuration);
-                UIFader.FadeOut(loseResultPanel, fadeDuration);
-                
-                // Start restart timer
-                restartTimerCoroutine = StartCoroutine(RestartTimerCoroutine(winRestartTimerText));
-            }
-            else
-            {
-                // Show lose panel
-                loseScoreText.text = scoreText;
-                UIFader.FadeIn(loseResultPanel, fadeDuration);
-                UIFader.FadeOut(winResultPanel, fadeDuration);
-                
-                // Start restart timer
-                restartTimerCoroutine = StartCoroutine(RestartTimerCoroutine(loseRestartTimerText));
-            }
+            if (result.Passed) UIFader.FadeIn(winResultPanel, fadeDuration);
+            else UIFader.FadeIn(loseResultPanel, fadeDuration);
         }
         else
         {
-            // Fallback - show lose panel
             UIFader.FadeIn(loseResultPanel, fadeDuration);
             UIFader.FadeOut(winResultPanel, fadeDuration);
         }
@@ -96,22 +67,5 @@ public class UIManager : MonoBehaviour
     {
         UIFader.FadeOut(startPanel, fadeDuration);
         UIFader.FadeIn(quizPanel, fadeDuration);
-    }
-    
-    private System.Collections.IEnumerator RestartTimerCoroutine(Text timerText)
-    {
-        float timer = 10f; // 10 second restart delay
-        
-        while (timer > 0)
-        {
-            timerText.text = $"Restarting in: {Mathf.CeilToInt(timer)}s";
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        
-        timerText.text = "Restarting...";
-        
-        // The GameManager will handle the actual restart
-        // This coroutine just updates the UI
     }
 }

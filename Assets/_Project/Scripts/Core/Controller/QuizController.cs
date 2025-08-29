@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,10 +10,10 @@ public class QuizController : MonoBehaviour
     [SerializeField] private TextAsset quizJson;
     
     [Header("Quiz UI References")]
-    [SerializeField] private Text questionText;
+    [SerializeField] private TMP_Text questionText;
     [SerializeField] private Button[] answerButtons;
-    [SerializeField] private Text timerText;
-    [SerializeField] private Text questionCounterText;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text questionCounterText;
     
     [Header("Settings")]
     [SerializeField] private float questionTimeLimit = 30f;
