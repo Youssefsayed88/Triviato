@@ -13,7 +13,6 @@ public class ChoiceController : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color correctColor = Color.blue;
     [SerializeField] private Color wrongColor = Color.red;
-    [SerializeField] private Color correctAnswerColor = Color.green;
     
     private string choiceTextValue;
     private bool isCorrectAnswer;
@@ -67,7 +66,7 @@ public class ChoiceController : MonoBehaviour
     {
         if (isCorrectAnswer)
         {
-            buttonImage.color = correctAnswerColor;
+            buttonImage.color = correctColor;
         }
     }
     
