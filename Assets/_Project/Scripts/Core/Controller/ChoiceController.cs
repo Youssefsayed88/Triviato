@@ -19,19 +19,57 @@ public class ChoiceController : MonoBehaviour
     private bool isSelected;
     private System.Action<string, bool> onChoiceSelected;
     
+    #region Unity Lifecycle
+    
     private void Awake()
     {
+        InitializeComponents();
+    }
+    
+    #endregion
+    
+    #region Initialization
+    
+    private void InitializeComponents()
+    {
+        InitializeButton();
+        InitializeText();
+        InitializeImage();
+        SetupButtonListener();
+    }
+    
+    private void InitializeButton()
+    {
         if (choiceButton == null)
+        {
             choiceButton = GetComponent<Button>();
-        
+        }
+    }
+    
+    private void InitializeText()
+    {
         if (choiceText == null)
+        {
             choiceText = GetComponentInChildren<TMP_Text>();
-        
+        }
+    }
+    
+    private void InitializeImage()
+    {
         if (buttonImage == null)
+        {
             buttonImage = GetComponent<Image>();
-        
+        }
+    }
+    
+    private void SetupButtonListener()
+    {
         choiceButton.onClick.AddListener(OnChoiceClicked);
     }
+    
+    #endregion
+    
+    #region Public Methods
     
     public void Initialize(string text, bool isCorrect, System.Action<string, bool> callback)
     {
@@ -75,13 +113,25 @@ public class ChoiceController : MonoBehaviour
         choiceButton.interactable = false;
     }
     
+    #endregion
+    
+    #region Event Handlers
+    
     private void OnChoiceClicked()
     {
         if (isSelected) return;
         
         isSelected = true;
-        
-        // Play appropriate sound effect
+        PlayAnswerSound();
+        onChoiceSelected?.Invoke(choiceTextValue, isCorrectAnswer);
+    }
+    
+    #endregion
+    
+    #region Audio Methods
+    
+    private void PlayAnswerSound()
+    {
         if (AudioManager.Instance != null)
         {
             if (isCorrectAnswer)
@@ -93,9 +143,11 @@ public class ChoiceController : MonoBehaviour
                 AudioManager.Instance.PlayWrongAnswer();
             }
         }
-        
-        onChoiceSelected?.Invoke(choiceTextValue, isCorrectAnswer);
     }
+    
+    #endregion
+    
+    #region Getters
     
     public string GetChoiceText()
     {
@@ -106,4 +158,6 @@ public class ChoiceController : MonoBehaviour
     {
         return isCorrectAnswer;
     }
+    
+    #endregion
 }

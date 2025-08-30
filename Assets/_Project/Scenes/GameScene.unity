@@ -12735,6 +12735,8 @@ GameObject:
   - component: {fileID: 1724216433}
   - component: {fileID: 1724216434}
   - component: {fileID: 1724216435}
+  - component: {fileID: 1724216437}
+  - component: {fileID: 1724216436}
   m_Layer: 5
   m_Name: QuizPanel
   m_TagString: Untagged
@@ -12790,17 +12792,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quizJson: {fileID: 4900000, guid: af45781b4ca735f4d81c1067234f31ac, type: 3}
+  answerDelay: 2
+  timerManager: {fileID: 1724216437}
+  uiManager: {fileID: 1724216436}
+--- !u!114 &1724216436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724216432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9985be521ebe6b94aa1ae334b7cbcd8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   questionText: {fileID: 142135314}
-  timerText: {fileID: 911036950}
   questionCounterText: {fileID: 73477256}
   choicePrefab: {fileID: 4075533280519427530, guid: 904234f68d3e320469bd8784f0577d3e, type: 3}
   choiceGridLayout: {fileID: 583373049}
   questionProgressPrefab: {fileID: 5288019765530585009, guid: d3520c6719a7d604c99fc67b20157e6c, type: 3}
   questionProgressContainer: {fileID: 446704935}
-  questionTimeLimit: 10
-  answerDelay: 2
   correctAnswerParticles: {fileID: 511609376}
   wrongAnswerParticles: {fileID: 1721952802}
+--- !u!114 &1724216437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724216432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6170e09a854297e4f8bb9286c3c7ec72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerText: {fileID: 911036950}
+  questionTimeLimit: 10
 --- !u!1 &1767921785
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,19 +15,47 @@ public class QuestionProgressController : MonoBehaviour
     
     private int questionIndex;
     
+    #region Unity Lifecycle
+    
     private void Awake()
     {
-        if (backgroundImage == null)
-            backgroundImage = GetComponent<Image>();
-        
-        if (questionNumberText == null)
-            questionNumberText = GetComponentInChildren<TMP_Text>();
+        InitializeComponents();
     }
+    
+    #endregion
+    
+    #region Initialization
+    
+    private void InitializeComponents()
+    {
+        InitializeBackgroundImage();
+        InitializeQuestionNumberText();
+    }
+    
+    private void InitializeBackgroundImage()
+    {
+        if (backgroundImage == null)
+        {
+            backgroundImage = GetComponent<Image>();
+        }
+    }
+    
+    private void InitializeQuestionNumberText()
+    {
+        if (questionNumberText == null)
+        {
+            questionNumberText = GetComponentInChildren<TMP_Text>();
+        }
+    }
+    
+    #endregion
+    
+    #region Public Methods
     
     public void Initialize(int questionIndex)
     {
         this.questionIndex = questionIndex;
-        questionNumberText.text = $"Question #{questionIndex + 1}";
+        UpdateQuestionNumberText();
         ResetToNormal();
     }
     
@@ -47,9 +75,24 @@ public class QuestionProgressController : MonoBehaviour
         backgroundImage.color = wrongColor;
         questionNumberText.color = normalColor;
     }
-
+    
+    #endregion
+    
+    #region Private Methods
+    
+    private void UpdateQuestionNumberText()
+    {
+        questionNumberText.text = $"Question #{questionIndex + 1}";
+    }
+    
+    #endregion
+    
+    #region Getters
+    
     public int GetQuestionIndex()
     {
         return questionIndex;
     }
+    
+    #endregion
 }
