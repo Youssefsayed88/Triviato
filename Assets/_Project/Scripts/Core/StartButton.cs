@@ -4,40 +4,137 @@ using UnityEngine.UI;
 
 public class StartButton : MonoBehaviour
 {
-    [SerializeField] Button startButton;
-    [SerializeField] Image loadingImage;
-
-    private void OnEnable() => GameManager.Instance.GameRestarted += OnGameReset;
-    private void OnDisable() => GameManager.Instance.GameRestarted -= OnGameReset;
-
-    void Start()
+    [SerializeField] private Button startButton;
+    [SerializeField] private Image loadingImage;
+    
+    private const float LOADING_INCREMENT = 0.01f;
+    private const float LOADING_DELAY = 0.01f;
+    private const float MAX_LOADING_AMOUNT = 1f;
+    private const float MIN_LOADING_AMOUNT = 0f;
+    
+    #region Unity Lifecycle
+    
+    private void Start()
+    {
+        InitializeButton();
+        ResetLoadingImage();
+    }
+    
+    private void OnEnable()
+    {
+        SubscribeToEvents();
+    }
+    
+    private void OnDisable()
+    {
+        UnsubscribeFromEvents();
+    }
+    
+    #endregion
+    
+    #region Initialization
+    
+    private void InitializeButton()
     {
         startButton.onClick.AddListener(OnStartButtonClicked);
-        loadingImage.fillAmount = 0f;
     }
-
+    
+    private void ResetLoadingImage()
+    {
+        loadingImage.fillAmount = MIN_LOADING_AMOUNT;
+    }
+    
+    #endregion
+    
+    #region Event Management
+    
+    private void SubscribeToEvents()
+    {
+        GameManager.Instance.GameRestarted += OnGameReset;
+    }
+    
+    private void UnsubscribeFromEvents()
+    {
+        GameManager.Instance.GameRestarted -= OnGameReset;
+    }
+    
+    #endregion
+    
+    #region Event Handlers
+    
     private void OnGameReset()
     {
-        startButton.interactable = true;
-        loadingImage.fillAmount = 0f;
+        ResetButtonState();
+        ResetLoadingImage();
     }
-
-    void OnStartButtonClicked()
+    
+    private void OnStartButtonClicked()
+    {
+        DisableButton();
+        PlayStartGameSound();
+        StartLoadingAnimation();
+    }
+    
+    #endregion
+    
+    #region Button Management
+    
+    private void DisableButton()
     {
         startButton.interactable = false;
+    }
+    
+    private void ResetButtonState()
+    {
+        startButton.interactable = true;
+    }
+    
+    #endregion
+    
+    #region Audio Methods
+    
+    private void PlayStartGameSound()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayStartGame();
+        }
+    }
+    
+    #endregion
+    
+    #region Loading Animation
+    
+    private void StartLoadingAnimation()
+    {
         StartCoroutine(FillLoadingImage());
     }
-
-    IEnumerator FillLoadingImage()
+    
+    private IEnumerator FillLoadingImage()
     {
-        while (loadingImage.fillAmount < 1f)
+        while (loadingImage.fillAmount < MAX_LOADING_AMOUNT)
         {
-            loadingImage.fillAmount += 0.01f;
-            yield return new WaitForSeconds(0.01f);
+            loadingImage.fillAmount += LOADING_INCREMENT;
+            yield return new WaitForSeconds(LOADING_DELAY);
         }
-        loadingImage.fillAmount = 1f;
+        
+        CompleteLoading();
+    }
+    
+    private void CompleteLoading()
+    {
+        loadingImage.fillAmount = MAX_LOADING_AMOUNT;
         StartGame();
     }
-
-    void StartGame() => GameManager.Instance.StartGame();
+    
+    #endregion
+    
+    #region Game Management
+    
+    private void StartGame()
+    {
+        GameManager.Instance.StartGame();
+    }
+    
+    #endregion
 }

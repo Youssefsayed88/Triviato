@@ -13,14 +13,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.5f;
     
     private Coroutine restartTimerCoroutine;
-    
-    private void Start() => ShowStartPanel();
-    
-    private void OnEnable()
+
+    private void Start()
     {
         GameManager.Instance.GameStarted += ShowQuizPanel;
         GameManager.Instance.GameEnded += ShowResultPanel;
         GameManager.Instance.GameRestarted += ShowStartPanel;
+        ShowStartPanel();
     }
     
     public void OnDisable()

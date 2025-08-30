@@ -2,47 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class QuizController : MonoBehaviour
 {
     [Header("Quiz Data")]
     [SerializeField] private TextAsset quizJson;
     
-    [Header("Quiz UI References")]
-    [SerializeField] private TMP_Text questionText;
-    [SerializeField] private TMP_Text timerText;
-    [SerializeField] private TMP_Text questionCounterText;
-    
-    [Header("Choice System")]
-    [SerializeField] private GameObject choicePrefab;
-    [SerializeField] private Transform choiceGridLayout;
-    
     [Header("Settings")]
-    [SerializeField] private float questionTimeLimit = 30f;
     [SerializeField] private float answerDelay = 2f;
     
+    [Header("Managers")]
+    [SerializeField] private QuizTimerManager timerManager;
+    [SerializeField] private QuizUIManager uiManager;
+    
+    private QuizStateManager stateManager;
+    private QuizResultHandler resultHandler;
     private Quiz quizData;
-    private List<Question> randomizedQuestions = new();
-    private int currentQuestionIndex = 0;
-    private int correctAnswers = 0;
-    private float currentTimer;
-    private bool isAnswering = false;
-    private Coroutine timerCoroutine;
-    private List<ChoiceController> currentChoices = new List<ChoiceController>();
     
     private void Start()
     {
+        InitializeManagers();
         LoadQuizData();
-        GameManager.Instance.GameStarted += StartQuiz;
-        GameManager.Instance.GameRestarted += ResetQuiz;
+        SubscribeToGameEvents();
     }
-
+    
     private void OnDisable()
     {
-        if (GameManager.Instance == null) return;
-        GameManager.Instance.GameStarted -= StartQuiz;
-        GameManager.Instance.GameRestarted -= ResetQuiz;
+        UnsubscribeFromGameEvents();
+    }
+    
+    private void Update()
+    {
+        HandleRestartInput();
+    }
+    
+    private void InitializeManagers()
+    {
+        stateManager = new QuizStateManager();
+        resultHandler = new QuizResultHandler();
+        timerManager.Initialize(OnTimeUp);
     }
     
     private void LoadQuizData()
@@ -51,217 +49,106 @@ public class QuizController : MonoBehaviour
         Debug.Log($"Loaded {quizData.questions.Count} questions");
     }
     
+    private void SubscribeToGameEvents()
+    {
+        GameManager.Instance.GameStarted += StartQuiz;
+        GameManager.Instance.GameRestarted += ResetQuiz;
+    }
+    
+    private void UnsubscribeFromGameEvents()
+    {
+        if (GameManager.Instance == null) return;
+        GameManager.Instance.GameStarted -= StartQuiz;
+        GameManager.Instance.GameRestarted -= ResetQuiz;
+    }
+    
     private void StartQuiz()
     {
-        // Randomize questions
-        randomizedQuestions = new List<Question>(quizData.questions);
-        for (int i = randomizedQuestions.Count - 1; i > 0; i--)
-        {
-            var randomIndex = Random.Range(0, i + 1);
-            var temp = randomizedQuestions[i];
-            randomizedQuestions[i] = randomizedQuestions[randomIndex];
-            randomizedQuestions[randomIndex] = temp;
-        }
-        
-        currentQuestionIndex = 0;
-        correctAnswers = 0;
-        
+        stateManager.Initialize(quizData);
+        uiManager.InitializeQuestionProgress(stateManager.TotalQuestions);
         DisplayCurrentQuestion();
     }
     
     private void ResetQuiz()
     {
-        if (timerCoroutine != null)
-        {
-            StopCoroutine(timerCoroutine);
-        }
-        
-        ClearCurrentChoices();
-        currentQuestionIndex = 0;
-        correctAnswers = 0;
-        isAnswering = false;
+        timerManager.StopTimer();
+        uiManager.ClearAllUI();
+        stateManager.ResetState();
     }
     
     private void DisplayCurrentQuestion()
     {
-        if (currentQuestionIndex >= randomizedQuestions.Count)
+        if (stateManager.IsQuizComplete)
         {
             EndQuiz();
             return;
         }
         
-        Question currentQuestion = randomizedQuestions[currentQuestionIndex];
-        
-        // Display question
-        questionText.text = currentQuestion.question;
-        questionCounterText.text = $"#{currentQuestionIndex + 1}";
-        
-        // Clear previous choices
-        ClearCurrentChoices();
-        
-        // Randomize answer order
-        List<string> randomizedOptions = new List<string>(currentQuestion.options);
-        for (int i = randomizedOptions.Count - 1; i > 0; i--)
-        {
-            int randomIndex = Random.Range(0, i + 1);
-            string temp = randomizedOptions[i];
-            randomizedOptions[i] = randomizedOptions[randomIndex];
-            randomizedOptions[randomIndex] = temp;
-        }
-        
-        // Create choice buttons
-        CreateChoiceButtons(randomizedOptions, currentQuestion.correct_answer);
-        
-        // Start timer
-        StartTimer();
-    }
-    
-    private void CreateChoiceButtons(List<string> options, string correctAnswer)
-    {
-        foreach (string option in options)
-        {
-            // Instantiate choice prefab under grid layout
-            GameObject choiceGO = Instantiate(choicePrefab, choiceGridLayout);
-            ChoiceController choiceController = choiceGO.GetComponent<ChoiceController>();
-            
-            if (choiceController != null)
-            {
-                bool isCorrect = option == correctAnswer;
-                choiceController.Initialize(option, isCorrect, OnChoiceSelected);
-                currentChoices.Add(choiceController);
-            }
-        }
-    }
-    
-    private void ClearCurrentChoices()
-    {
-        foreach (ChoiceController choice in currentChoices)
-        {
-            if (choice != null)
-            {
-                Destroy(choice.gameObject);
-            }
-        }
-        currentChoices.Clear();
+        stateManager.SetAnswering(false);
+        Question currentQuestion = stateManager.GetCurrentQuestion();
+        uiManager.DisplayQuestion(currentQuestion, stateManager.CurrentQuestionIndex);
+        uiManager.ClearChoices();
+        uiManager.CreateChoiceButtons(currentQuestion, OnChoiceSelected);
+        timerManager.StartTimer();
     }
     
     private void OnChoiceSelected(string selectedAnswer, bool isCorrect)
     {
-        if (isAnswering) return;
+        if (stateManager.IsAnswering) return;
         
-        isAnswering = true;
+        stateManager.SetAnswering(true);
+        timerManager.StopTimer();
         
-        if (isCorrect)
-        {
-            correctAnswers++;
-        }
+        HandleAnswerResult(isCorrect);
+        uiManager.UpdateQuestionProgress(stateManager.CurrentQuestionIndex, isCorrect);
+        uiManager.ShowAnswerFeedback(selectedAnswer, isCorrect);
         
-        // Show visual feedback
-        ShowAnswerFeedback(selectedAnswer, isCorrect);
-        
-        // Move to next question after delay
         StartCoroutine(NextQuestionAfterDelay());
     }
     
-    private void ShowAnswerFeedback(string selectedAnswer, bool isCorrect)
+    private void HandleAnswerResult(bool isCorrect)
     {
-        foreach (ChoiceController choice in currentChoices)
-        {
-            if (choice.GetChoiceText() == selectedAnswer)
-            {
-                if (isCorrect)
-                {
-                    choice.SetAsCorrect();
-                }
-                else
-                {
-                    choice.SetAsWrong();
-                }
-            }
-            else if (choice.IsCorrectAnswer())
-            {
-                // Show correct answer in green
-                choice.ShowCorrectAnswer();
-            }
-            
-            choice.DisableInteraction();
-        }
-    }
-    
-    private void StartTimer()
-    {
-        currentTimer = questionTimeLimit;
-        isAnswering = false;
+        uiManager.PlayAnswerEffects(isCorrect);
         
-        if (timerCoroutine != null)
+        if (isCorrect)
         {
-            StopCoroutine(timerCoroutine);
-        }
-        
-        timerCoroutine = StartCoroutine(TimerCoroutine());
-    }
-    
-    private IEnumerator TimerCoroutine()
-    {
-        while (currentTimer > 0 && !isAnswering)
-        {
-            timerText.text = $"Time: {Mathf.CeilToInt(currentTimer)}s";
-            currentTimer -= Time.deltaTime;
-            yield return null;
-        }
-        
-        if (currentTimer <= 0 && !isAnswering)
-        {
-            // Time's up - count as wrong answer
-            OnTimeUp();
+            stateManager.IncrementCorrectAnswers();
         }
     }
     
     private void OnTimeUp()
     {
-        isAnswering = true;
-        
-        // Show correct answer
-        foreach (ChoiceController choice in currentChoices)
-        {
-            if (choice.IsCorrectAnswer())
-            {
-                choice.ShowCorrectAnswer();
-            }
-            choice.DisableInteraction();
-        }
-        
-        // Move to next question after delay
+        stateManager.SetAnswering(true);
+        uiManager.UpdateQuestionProgress(stateManager.CurrentQuestionIndex, false);
+        uiManager.ShowCorrectAnswerForTimeUp();
         StartCoroutine(NextQuestionAfterDelay());
     }
     
     private IEnumerator NextQuestionAfterDelay()
     {
         yield return new WaitForSeconds(answerDelay);
-        currentQuestionIndex++;
+        stateManager.MoveToNextQuestion();
         DisplayCurrentQuestion();
     }
     
     private void EndQuiz()
     {
-        // Calculate result
-        QuizResult result = new QuizResult
-        {
-            totalQuestions = randomizedQuestions.Count,
-            correctAnswers = correctAnswers
-        };
+        timerManager.StopTimer();
         
-        // Store result for UIManager to access
-        QuizResultManager.SetResult(result);
+        QuizResult result = resultHandler.CalculateResult(
+            stateManager.TotalQuestions, 
+            stateManager.CorrectAnswers
+        );
         
-        // End the game
+        resultHandler.StoreResult(result);
+        resultHandler.PlayResultSound(stateManager.TotalQuestions, stateManager.CorrectAnswers);
+        
         GameManager.Instance.ShowResult();
     }
     
-    void Update()
+    private void HandleRestartInput()
     {
-        // Hidden restart button (press R key)
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && !stateManager.IsQuizComplete)
         {
             GameManager.Instance.RestartGame();
         }
