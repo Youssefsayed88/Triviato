@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class QuizResultHandler
 {
-    private const float WIN_PERCENTAGE_THRESHOLD = 0.7f;
+    private const float WIN_PERCENTAGE_THRESHOLD = 0.5f;
     
     public QuizResult CalculateResult(int totalQuestions, int correctAnswers)
     {
