@@ -4,9 +4,9 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
 
-    public Action GameStarted; // float parameter for delay
+    public Action GameStarted;
     public Action GameEnded;
     public Action GameRestarted;
     public enum GameState { Start, Quiz, Result }
@@ -14,10 +14,10 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Instance = this;
+            //DontDestroyOnLoad(gameObject);
             SetState(GameState.Start);
         }
         else

@@ -636,111 +636,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 260769639}
   m_CullTransparentMesh: 1
---- !u!1 &462915956
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 462915958}
-  - component: {fileID: 462915957}
-  m_Layer: 0
-  m_Name: QuizController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &462915957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 462915956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a37a29f483b33dc49925dd5368e408be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizJson: {fileID: 4900000, guid: af45781b4ca735f4d81c1067234f31ac, type: 3}
---- !u!4 &462915958
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 462915956}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.1450431, y: 0.22982433, z: -0.035810564}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &467577853
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 467577855}
-  - component: {fileID: 467577854}
-  m_Layer: 0
-  m_Name: UIHelper
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &467577854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 467577853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20eca500272045246a36468960a271b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  setupInstructions: "\r\nSETUP INSTRUCTIONS:\r\n\r\n1. Create a Canvas (Right-click
-    in Hierarchy \u2192 UI \u2192 Canvas)\r\n2. Add an EventSystem if prompted\r\n3.
-    Create 3 Panel GameObjects as children of the Canvas:\r\n   - StartPanel\r\n  
-    - QuizPanel  \r\n   - ResultPanel\r\n\r\n4. For StartPanel:\r\n   - Add a Text
-    component for title\r\n   - Add a Button for 'Start Game'\r\n   - Connect button
-    to GameManager.StartGame()\r\n\r\n5. For QuizPanel:\r\n   - Add Text for question
-    display\r\n   - Add Text for timer\r\n   - Add Text for question counter\r\n  
-    - Add 4 Buttons for answers\r\n   - Connect QuizController references\r\n\r\n6.
-    For ResultPanel:\r\n   - Add Text for result message\r\n   - Add Text for score
-    display\r\n   - Add Text for restart timer\r\n\r\n7. Add GameManager and QuizController
-    scripts to empty GameObjects\r\n8. Connect all references in the Inspector\r\n\r\nPress
-    the buttons below to create basic UI structure automatically.\r\n"
-  canvasPrefab: {fileID: 0}
-  panelPrefab: {fileID: 0}
-  buttonPrefab: {fileID: 0}
-  textPrefab: {fileID: 0}
---- !u!4 &467577855
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 467577853}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1188,7 +1083,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPanel: {fileID: 799882797}
   quizPanel: {fileID: 1724216434}
-  resultPanels: {fileID: 728708672}
+  winResultPanel: {fileID: 1583942011}
+  loseResultPanel: {fileID: 891612850}
+  fadeDuration: 0.5
 --- !u!114 &689162966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,7 +1181,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 728708673}
-  - component: {fileID: 728708672}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -1292,18 +1188,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!225 &728708672
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728708671}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!224 &728708673
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1572,9 +1456,143 @@ CanvasGroup:
   m_GameObject: {fileID: 891612848}
   m_Enabled: 1
   m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!1 &911036949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 911036952}
+  - component: {fileID: 911036951}
+  - component: {fileID: 911036950}
+  m_Layer: 5
+  m_Name: Timer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &911036950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911036949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: New Text
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4291719432
+  m_fontColor: {r: 0.03137255, g: 0.4431373, b: 0.8078432, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 44.75
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &911036951
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911036949}
+  m_CullTransparentMesh: 1
+--- !u!224 &911036952
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911036949}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1724216433}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 500}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1225635657
 GameObject:
   m_ObjectHideFlags: 0
@@ -1793,7 +1811,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1450519044}
-  - component: {fileID: 1450519043}
+  - component: {fileID: 1450519045}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1801,28 +1819,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1450519043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1450519042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5005589b46fdacb44a02229730d8e9e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startPanel: {fileID: 0}
-  quizPanel: {fileID: 0}
-  resultPanel: {fileID: 0}
-  quizController: {fileID: 0}
-  resultText: {fileID: 0}
-  scoreText: {fileID: 0}
-  timerText: {fileID: 0}
-  currentState: 0
-  restartTimer: 10
-  isRestarting: 0
 --- !u!4 &1450519044
 Transform:
   m_ObjectHideFlags: 0
@@ -1838,6 +1834,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1450519045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450519042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d88ea031d08bd46aabb943e4034cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1544664131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2000,6 +2008,7 @@ GameObject:
   - component: {fileID: 1578269705}
   - component: {fileID: 1578269704}
   - component: {fileID: 1578269703}
+  - component: {fileID: 1578269706}
   m_Layer: 5
   m_Name: StartingButton
   m_TagString: Untagged
@@ -2109,6 +2118,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578269701}
   m_CullTransparentMesh: 1
+--- !u!114 &1578269706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578269701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e1b35df7c1eef45bcd571d71b36771, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 1578269703}
+  loadingImage: {fileID: 1767921787}
 --- !u!1 &1583942009
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,8 +2179,8 @@ CanvasGroup:
   m_GameObject: {fileID: 1583942009}
   m_Enabled: 1
   m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &1724216432
 GameObject:
@@ -2169,6 +2192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1724216433}
   - component: {fileID: 1724216434}
+  - component: {fileID: 1724216435}
   m_Layer: 5
   m_Name: QuizPanel
   m_TagString: Untagged
@@ -2191,6 +2215,7 @@ RectTransform:
   - {fileID: 1800233092}
   - {fileID: 179126140}
   - {fileID: 583373049}
+  - {fileID: 911036952}
   m_Father: {fileID: 689162969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2207,9 +2232,29 @@ CanvasGroup:
   m_GameObject: {fileID: 1724216432}
   m_Enabled: 1
   m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &1724216435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724216432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a37a29f483b33dc49925dd5368e408be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quizJson: {fileID: 4900000, guid: af45781b4ca735f4d81c1067234f31ac, type: 3}
+  questionText: {fileID: 142135314}
+  timerText: {fileID: 911036950}
+  questionCounterText: {fileID: 73477256}
+  choicePrefab: {fileID: 4075533280519427530, guid: 904234f68d3e320469bd8784f0577d3e, type: 3}
+  choiceGridLayout: {fileID: 583373049}
+  questionTimeLimit: 30
+  answerDelay: 2
 --- !u!1 &1767921785
 GameObject:
   m_ObjectHideFlags: 0
@@ -2438,7 +2483,5 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1450519044}
-  - {fileID: 467577855}
-  - {fileID: 462915958}
   - {fileID: 689162969}
   - {fileID: 1871130957}

@@ -18,17 +18,17 @@ public class UIManager : MonoBehaviour
     
     private void OnEnable()
     {
-        GameManager.instance.GameStarted += ShowQuizPanel;
-        GameManager.instance.GameEnded += ShowResultPanel;
-        GameManager.instance.GameRestarted += ShowStartPanel;
+        GameManager.Instance.GameStarted += ShowQuizPanel;
+        GameManager.Instance.GameEnded += ShowResultPanel;
+        GameManager.Instance.GameRestarted += ShowStartPanel;
     }
     
     public void OnDisable()
     {
-        if (GameManager.instance == null) return;
-        GameManager.instance.GameStarted -= ShowQuizPanel;
-        GameManager.instance.GameEnded -= ShowResultPanel;
-        GameManager.instance.GameRestarted -= ShowStartPanel;
+        if (GameManager.Instance == null) return;
+        GameManager.Instance.GameStarted -= ShowQuizPanel;
+        GameManager.Instance.GameEnded -= ShowResultPanel;
+        GameManager.Instance.GameRestarted -= ShowStartPanel;
     }
     
     public void ShowStartPanel()

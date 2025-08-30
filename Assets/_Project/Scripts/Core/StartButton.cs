@@ -7,9 +7,18 @@ public class StartButton : MonoBehaviour
     [SerializeField] Button startButton;
     [SerializeField] Image loadingImage;
 
+    private void OnEnable() => GameManager.Instance.GameRestarted += OnGameReset;
+    private void OnDisable() => GameManager.Instance.GameRestarted -= OnGameReset;
+
     void Start()
     {
         startButton.onClick.AddListener(OnStartButtonClicked);
+        loadingImage.fillAmount = 0f;
+    }
+
+    private void OnGameReset()
+    {
+        startButton.interactable = true;
         loadingImage.fillAmount = 0f;
     }
 
@@ -30,5 +39,5 @@ public class StartButton : MonoBehaviour
         StartGame();
     }
 
-    void StartGame() => GameManager.instance.StartGame();
+    void StartGame() => GameManager.Instance.StartGame();
 }

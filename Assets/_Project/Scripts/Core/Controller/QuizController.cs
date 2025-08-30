@@ -11,39 +11,38 @@ public class QuizController : MonoBehaviour
     
     [Header("Quiz UI References")]
     [SerializeField] private TMP_Text questionText;
-    [SerializeField] private Button[] answerButtons;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text questionCounterText;
+    
+    [Header("Choice System")]
+    [SerializeField] private GameObject choicePrefab;
+    [SerializeField] private Transform choiceGridLayout;
     
     [Header("Settings")]
     [SerializeField] private float questionTimeLimit = 30f;
     [SerializeField] private float answerDelay = 2f;
     
     private Quiz quizData;
-    private List<Question> randomizedQuestions;
+    private List<Question> randomizedQuestions = new();
     private int currentQuestionIndex = 0;
     private int correctAnswers = 0;
     private float currentTimer;
     private bool isAnswering = false;
     private Coroutine timerCoroutine;
+    private List<ChoiceController> currentChoices = new List<ChoiceController>();
     
     private void Start()
     {
         LoadQuizData();
-        SetupAnswerButtons();
+        GameManager.Instance.GameStarted += StartQuiz;
+        GameManager.Instance.GameRestarted += ResetQuiz;
     }
-    
-    private void OnEnable()
-    {
-        GameManager.instance.GameStarted += StartQuiz;
-        GameManager.instance.GameRestarted += ResetQuiz;
-    }
-    
+
     private void OnDisable()
     {
-        if (GameManager.instance == null) return;
-        GameManager.instance.GameStarted -= StartQuiz;
-        GameManager.instance.GameRestarted -= ResetQuiz;
+        if (GameManager.Instance == null) return;
+        GameManager.Instance.GameStarted -= StartQuiz;
+        GameManager.Instance.GameRestarted -= ResetQuiz;
     }
     
     private void LoadQuizData()
@@ -52,23 +51,14 @@ public class QuizController : MonoBehaviour
         Debug.Log($"Loaded {quizData.questions.Count} questions");
     }
     
-    private void SetupAnswerButtons()
-    {
-        for (int i = 0; i < answerButtons.Length; i++)
-        {
-            int buttonIndex = i;
-            answerButtons[i].onClick.AddListener(() => OnAnswerSelected(buttonIndex));
-        }
-    }
-    
     private void StartQuiz()
     {
         // Randomize questions
         randomizedQuestions = new List<Question>(quizData.questions);
         for (int i = randomizedQuestions.Count - 1; i > 0; i--)
         {
-            int randomIndex = Random.Range(0, i + 1);
-            Question temp = randomizedQuestions[i];
+            var randomIndex = Random.Range(0, i + 1);
+            var temp = randomizedQuestions[i];
             randomizedQuestions[i] = randomizedQuestions[randomIndex];
             randomizedQuestions[randomIndex] = temp;
         }
@@ -86,6 +76,7 @@ public class QuizController : MonoBehaviour
             StopCoroutine(timerCoroutine);
         }
         
+        ClearCurrentChoices();
         currentQuestionIndex = 0;
         correctAnswers = 0;
         isAnswering = false;
@@ -103,7 +94,10 @@ public class QuizController : MonoBehaviour
         
         // Display question
         questionText.text = currentQuestion.question;
-        questionCounterText.text = $"Question {currentQuestionIndex + 1}/{randomizedQuestions.Count}";
+        questionCounterText.text = $"#{currentQuestionIndex + 1}";
+        
+        // Clear previous choices
+        ClearCurrentChoices();
         
         // Randomize answer order
         List<string> randomizedOptions = new List<string>(currentQuestion.options);
@@ -115,24 +109,83 @@ public class QuizController : MonoBehaviour
             randomizedOptions[randomIndex] = temp;
         }
         
-        // Setup answer buttons
-        for (int i = 0; i < answerButtons.Length; i++)
-        {
-            if (i < randomizedOptions.Count)
-            {
-                answerButtons[i].gameObject.SetActive(true);
-                answerButtons[i].GetComponentInChildren<Text>().text = randomizedOptions[i];
-                answerButtons[i].interactable = true;
-                answerButtons[i].image.color = Color.white; // Reset button color
-            }
-            else
-            {
-                answerButtons[i].gameObject.SetActive(false);
-            }
-        }
+        // Create choice buttons
+        CreateChoiceButtons(randomizedOptions, currentQuestion.correct_answer);
         
         // Start timer
         StartTimer();
+    }
+    
+    private void CreateChoiceButtons(List<string> options, string correctAnswer)
+    {
+        foreach (string option in options)
+        {
+            // Instantiate choice prefab under grid layout
+            GameObject choiceGO = Instantiate(choicePrefab, choiceGridLayout);
+            ChoiceController choiceController = choiceGO.GetComponent<ChoiceController>();
+            
+            if (choiceController != null)
+            {
+                bool isCorrect = option == correctAnswer;
+                choiceController.Initialize(option, isCorrect, OnChoiceSelected);
+                currentChoices.Add(choiceController);
+            }
+        }
+    }
+    
+    private void ClearCurrentChoices()
+    {
+        foreach (ChoiceController choice in currentChoices)
+        {
+            if (choice != null)
+            {
+                Destroy(choice.gameObject);
+            }
+        }
+        currentChoices.Clear();
+    }
+    
+    private void OnChoiceSelected(string selectedAnswer, bool isCorrect)
+    {
+        if (isAnswering) return;
+        
+        isAnswering = true;
+        
+        if (isCorrect)
+        {
+            correctAnswers++;
+        }
+        
+        // Show visual feedback
+        ShowAnswerFeedback(selectedAnswer, isCorrect);
+        
+        // Move to next question after delay
+        StartCoroutine(NextQuestionAfterDelay());
+    }
+    
+    private void ShowAnswerFeedback(string selectedAnswer, bool isCorrect)
+    {
+        foreach (ChoiceController choice in currentChoices)
+        {
+            if (choice.GetChoiceText() == selectedAnswer)
+            {
+                if (isCorrect)
+                {
+                    choice.SetAsCorrect();
+                }
+                else
+                {
+                    choice.SetAsWrong();
+                }
+            }
+            else if (choice.IsCorrectAnswer())
+            {
+                // Show correct answer in green
+                choice.ShowCorrectAnswer();
+            }
+            
+            choice.DisableInteraction();
+        }
     }
     
     private void StartTimer()
@@ -168,64 +221,14 @@ public class QuizController : MonoBehaviour
     {
         isAnswering = true;
         
-        // Show correct answer in green
-        Question currentQuestion = randomizedQuestions[currentQuestionIndex];
-        for (int i = 0; i < answerButtons.Length; i++)
+        // Show correct answer
+        foreach (ChoiceController choice in currentChoices)
         {
-            if (answerButtons[i].GetComponentInChildren<Text>().text == currentQuestion.correct_answer)
+            if (choice.IsCorrectAnswer())
             {
-                answerButtons[i].image.color = Color.green;
-                break;
+                choice.ShowCorrectAnswer();
             }
-        }
-        
-        // Disable all buttons
-        foreach (Button button in answerButtons)
-        {
-            button.interactable = false;
-        }
-        
-        // Move to next question after delay
-        StartCoroutine(NextQuestionAfterDelay());
-    }
-    
-    private void OnAnswerSelected(int buttonIndex)
-    {
-        if (isAnswering) return;
-        
-        isAnswering = true;
-        Question currentQuestion = randomizedQuestions[currentQuestionIndex];
-        
-        // Get the selected answer text
-        string selectedAnswer = answerButtons[buttonIndex].GetComponentInChildren<Text>().text;
-        
-        // Check if answer is correct
-        bool isCorrect = selectedAnswer == currentQuestion.correct_answer;
-        
-        if (isCorrect)
-        {
-            correctAnswers++;
-            answerButtons[buttonIndex].image.color = Color.blue;
-        }
-        else
-        {
-            answerButtons[buttonIndex].image.color = Color.red;
-            
-            // Show correct answer in green
-            for (int i = 0; i < answerButtons.Length; i++)
-            {
-                if (answerButtons[i].GetComponentInChildren<Text>().text == currentQuestion.correct_answer)
-                {
-                    answerButtons[i].image.color = Color.green;
-                    break;
-                }
-            }
-        }
-        
-        // Disable all buttons
-        foreach (Button button in answerButtons)
-        {
-            button.interactable = false;
+            choice.DisableInteraction();
         }
         
         // Move to next question after delay
@@ -252,7 +255,7 @@ public class QuizController : MonoBehaviour
         QuizResultManager.SetResult(result);
         
         // End the game
-        GameManager.instance.ShowResult();
+        GameManager.Instance.ShowResult();
     }
     
     void Update()
@@ -260,7 +263,7 @@ public class QuizController : MonoBehaviour
         // Hidden restart button (press R key)
         if (Input.GetKeyDown(KeyCode.R))
         {
-            GameManager.instance.RestartGame();
+            GameManager.Instance.RestartGame();
         }
     }
 }
