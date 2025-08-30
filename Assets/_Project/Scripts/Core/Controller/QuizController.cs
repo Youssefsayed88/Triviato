@@ -18,6 +18,10 @@ public class QuizController : MonoBehaviour
     [SerializeField] private GameObject choicePrefab;
     [SerializeField] private Transform choiceGridLayout;
     
+    [Header("Question Progress System")]
+    [SerializeField] private GameObject questionProgressPrefab;
+    [SerializeField] private Transform questionProgressContainer;
+    
     [Header("Settings")]
     [SerializeField] private float questionTimeLimit = 30f;
     [SerializeField] private float answerDelay = 2f;
@@ -30,6 +34,7 @@ public class QuizController : MonoBehaviour
     private bool isAnswering = false;
     private Coroutine timerCoroutine;
     private List<ChoiceController> currentChoices = new List<ChoiceController>();
+    private List<QuestionProgressController> questionProgressIndicators = new List<QuestionProgressController>();
     
     private void Start()
     {
@@ -66,6 +71,9 @@ public class QuizController : MonoBehaviour
         currentQuestionIndex = 0;
         correctAnswers = 0;
         
+        // Create question progress indicators
+        CreateQuestionProgressIndicators();
+        
         DisplayCurrentQuestion();
     }
     
@@ -77,6 +85,7 @@ public class QuizController : MonoBehaviour
         }
         
         ClearCurrentChoices();
+        ClearQuestionProgressIndicators();
         currentQuestionIndex = 0;
         correctAnswers = 0;
         isAnswering = false;
@@ -145,6 +154,54 @@ public class QuizController : MonoBehaviour
         currentChoices.Clear();
     }
     
+    private void CreateQuestionProgressIndicators()
+    {
+        ClearQuestionProgressIndicators();
+        
+        for (int i = 0; i < randomizedQuestions.Count; i++)
+        {
+            GameObject progressGO = Instantiate(questionProgressPrefab, questionProgressContainer);
+            QuestionProgressController progressController = progressGO.GetComponent<QuestionProgressController>();
+            
+            if (progressController != null)
+            {
+                progressController.Initialize(i);
+                questionProgressIndicators.Add(progressController);
+            }
+        }
+    }
+    
+    private void ClearQuestionProgressIndicators()
+    {
+        foreach (QuestionProgressController indicator in questionProgressIndicators)
+        {
+            if (indicator != null)
+            {
+                Destroy(indicator.gameObject);
+            }
+        }
+        questionProgressIndicators.Clear();
+    }
+    
+    private void UpdateQuestionProgressIndicator(bool isCorrect)
+    {
+        if (currentQuestionIndex < questionProgressIndicators.Count)
+        {
+            QuestionProgressController currentIndicator = questionProgressIndicators[currentQuestionIndex];
+            if (currentIndicator != null)
+            {
+                if (isCorrect)
+                {
+                    currentIndicator.SetAsCorrect();
+                }
+                else
+                {
+                    currentIndicator.SetAsWrong();
+                }
+            }
+        }
+    }
+    
     private void OnChoiceSelected(string selectedAnswer, bool isCorrect)
     {
         if (isAnswering) return;
@@ -155,6 +212,9 @@ public class QuizController : MonoBehaviour
         {
             correctAnswers++;
         }
+        
+        // Update question progress indicator
+        UpdateQuestionProgressIndicator(isCorrect);
         
         // Show visual feedback
         ShowAnswerFeedback(selectedAnswer, isCorrect);
@@ -212,6 +272,7 @@ public class QuizController : MonoBehaviour
         
         if (currentTimer <= 0 && !isAnswering)
         {
+            timerText.text = $"Time: 0s";
             // Time's up - count as wrong answer
             OnTimeUp();
         }
@@ -220,6 +281,9 @@ public class QuizController : MonoBehaviour
     private void OnTimeUp()
     {
         isAnswering = true;
+        
+        // Update question progress indicator (time up = wrong answer)
+        UpdateQuestionProgressIndicator(false);
         
         // Show correct answer
         foreach (ChoiceController choice in currentChoices)
