@@ -25,6 +25,13 @@ public class StartButton : MonoBehaviour
     void OnStartButtonClicked()
     {
         startButton.interactable = false;
+        
+        // Play start game sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayStartGame();
+        }
+        
         StartCoroutine(FillLoadingImage());
     }
 

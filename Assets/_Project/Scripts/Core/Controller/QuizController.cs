@@ -84,6 +84,12 @@ public class QuizController : MonoBehaviour
             StopCoroutine(timerCoroutine);
         }
         
+        // Stop timer sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTimerSound();
+        }
+        
         ClearCurrentChoices();
         ClearQuestionProgressIndicators();
         currentQuestionIndex = 0;
@@ -208,6 +214,12 @@ public class QuizController : MonoBehaviour
         
         isAnswering = true;
         
+        // Stop timer sound when answering
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTimerSound();
+        }
+        
         if (isCorrect)
         {
             correctAnswers++;
@@ -258,6 +270,12 @@ public class QuizController : MonoBehaviour
             StopCoroutine(timerCoroutine);
         }
         
+        // Start timer sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StartTimerSound();
+        }
+        
         timerCoroutine = StartCoroutine(TimerCoroutine());
     }
     
@@ -281,6 +299,12 @@ public class QuizController : MonoBehaviour
     private void OnTimeUp()
     {
         isAnswering = true;
+        
+        // Stop timer sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTimerSound();
+        }
         
         // Update question progress indicator (time up = wrong answer)
         UpdateQuestionProgressIndicator(false);
@@ -308,12 +332,32 @@ public class QuizController : MonoBehaviour
     
     private void EndQuiz()
     {
+        // Stop timer sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopTimerSound();
+        }
+        
         // Calculate result
         QuizResult result = new QuizResult
         {
             totalQuestions = randomizedQuestions.Count,
             correctAnswers = correctAnswers
         };
+        
+        // Play win or lose sound based on performance
+        if (AudioManager.Instance != null)
+        {
+            float winPercentage = (float)correctAnswers / randomizedQuestions.Count;
+            if (winPercentage >= 0.7f) // 70% or higher is considered a win
+            {
+                AudioManager.Instance.PlayWinSound();
+            }
+            else
+            {
+                AudioManager.Instance.PlayLoseSound();
+            }
+        }
         
         // Store result for UIManager to access
         QuizResultManager.SetResult(result);

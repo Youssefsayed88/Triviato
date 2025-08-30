@@ -81,6 +81,20 @@ public class ChoiceController : MonoBehaviour
         if (isSelected) return;
         
         isSelected = true;
+        
+        // Play appropriate sound effect
+        if (AudioManager.Instance != null)
+        {
+            if (isCorrectAnswer)
+            {
+                AudioManager.Instance.PlayCorrectAnswer();
+            }
+            else
+            {
+                AudioManager.Instance.PlayWrongAnswer();
+            }
+        }
+        
         onChoiceSelected?.Invoke(choiceTextValue, isCorrectAnswer);
     }
     

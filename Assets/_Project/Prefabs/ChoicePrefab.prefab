@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 9039229205332708903}
   - component: {fileID: 3951591505900872582}
   - component: {fileID: 3074809233573701580}
+  - component: {fileID: 2257344286662886721}
   m_Layer: 5
   m_Name: ChoicePrefab
   m_TagString: Untagged
@@ -275,3 +276,15 @@ MonoBehaviour:
   correctColor: {r: 0, g: 0, b: 1, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   correctAnswerColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &2257344286662886721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4075533280519427530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d2f40150b3beb24ba6e7f1f6ee53762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
