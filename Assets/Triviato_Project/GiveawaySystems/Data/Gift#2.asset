@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b6d5665ecc34843829ba2da4e5d28b, type: 3}
+  m_Name: Gift#2
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: 1257cc2649dbaa4459ed41e987f4dfee, type: 3}
+  Name: Stickers
+  Quantity: 0
+  setting: 
+  GiveawayWeight: 0
+  isSettings: 0
+  isStringSettings: 0
+  disableChangeName: 0
+  disableChangeQuantity: 0
+  ID: 4951

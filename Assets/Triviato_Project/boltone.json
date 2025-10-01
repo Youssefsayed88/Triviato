@@ -1,0 +1,130 @@
+{
+  "questions": [
+    {
+      "question": "Robin works with clients across 9 industries. Which of these is NOT one of them?",
+      "options": [
+        "Gaming",
+        "Agritech",
+        "Real Estate"
+      ],
+      "correct_answer": "Gaming"
+    },
+    {
+      "question": "Robin is developing an AI-powered OCR tool. What kind of documents can it read?",
+      "options": [
+        "National IDs and bank statements",
+        "Comic books and novels",
+        "Street signs and graffiti"
+      ],
+      "correct_answer": "National IDs and bank statements"
+    },
+    {
+      "question": "Robin’s team is made of over 35 members. What backgrounds do they mostly come from?",
+      "options": [
+        "Finance and Accounting",
+        "Engineering and Science",
+        "Economics"
+      ],
+      "correct_answer": "Engineering and Science"
+    },
+    {
+      "question": "Robin has delivered AI projects across multiple countries. Which of these is one of them?",
+      "options": [
+        "Morocco",
+        "Japan",
+        "Brazil"
+      ],
+      "correct_answer": "Morocco"
+    },
+    {
+      "question": "What is the main difference between Artificial Intelligence and Machine Learning?",
+      "options": [
+        "ML is a subset of AI",
+        "AI is a subset of ML",
+        "They are the exact same thing"
+      ],
+      "correct_answer": "ML is a subset of AI"
+    },
+    {
+      "question": "Which of these is an example of supervised learning?",
+      "options": [
+        "Predicting house prices from historical data",
+        "Grouping customers by spending habits with no labels",
+        "Generating new art from random noise"
+      ],
+      "correct_answer": "Predicting house prices from historical data"
+    },
+    {
+      "question": "In data science, the phrase “garbage in, garbage out” means:",
+      "options": [
+        "If your data is poor, your model results will also be poor",
+        "Data scientists take out the trash daily",
+        "Models can magically fix broken data"
+      ],
+      "correct_answer": "If your data is poor, your model results will also be poor"
+    },
+    {
+      "question": "Which of these AI achievements happened first?",
+      "options": [
+        "AI beats world chess champion Garry Kasparov",
+        "AI writes a full-length movie script",
+        "AI generates photorealistic fake humans"
+      ],
+      "correct_answer": "AI beats world chess champion Garry Kasparov"
+    },
+    {
+      "question": "In machine learning, what’s the term for when a model performs well on training data but badly on new data?",
+      "options": [
+        "Overfitting",
+        "Underfitting",
+        "Perfect fitting"
+      ],
+      "correct_answer": "Overfitting"
+    },
+    {
+      "question": "Global logistics companies lose money every year due to late or failed deliveries. Roughly how much do they lose?",
+      "options": [
+        "Billions of dollars",
+        "Millions of dollars",
+        "Trillions of dollars"
+      ],
+      "correct_answer": "Billions of dollars"
+    },
+    {
+      "question": "Which of these challenges is often faced in supply chain management?",
+      "options": [
+        "Predicting demand accurately",
+        "Tracking real-time deliveries",
+        "Both of the above"
+      ],
+      "correct_answer": "Both of the above"
+    },
+    {
+      "question": "Which of these items has famously been used to demonstrate supply chain disruptions in recent years?",
+      "options": [
+        "Toilet paper",
+        "Smartphones",
+        "Space rockets"
+      ],
+      "correct_answer": "Toilet paper"
+    },
+    {
+      "question": "When a company optimizes its supply chain with AI, it mainly wants to:",
+      "options": [
+        "Reduce delays and costs",
+        "Make the trucks look cooler",
+        "Confuse the competition"
+      ],
+      "correct_answer": "Reduce delays and costs"
+    },
+    {
+      "question": "Which technology is often combined with AI to make supply chains more transparent?",
+      "options": [
+        "Blockchain",
+        "Magic",
+        "Virtual reality"
+      ],
+      "correct_answer": "Blockchain"
+    }
+  ]
+}
