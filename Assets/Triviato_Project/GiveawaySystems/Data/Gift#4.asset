@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d5665ecc34843829ba2da4e5d28b, type: 3}
   m_Name: Gift#4
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 755a0723efd4826469ef5eca2deaf349, type: 3}
+  sprite: {fileID: 21300000, guid: 46d2039f0ec05bb4eb781b58a5eef4bd, type: 3}
   Name: Transparent Bag
   Quantity: 1
   setting: 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d5665ecc34843829ba2da4e5d28b, type: 3}
   m_Name: Gift#2
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 1257cc2649dbaa4459ed41e987f4dfee, type: 3}
+  sprite: {fileID: 21300000, guid: caf159b4365d8c145b8dbddd4d293e33, type: 3}
   Name: Stickers
   Quantity: 0
   setting: 

@@ -1,27 +1,40 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using GiveawaySystems.Scripts;
 
 [CreateAssetMenu(fileName = "Giveaway", menuName = "GiveawaySystem/Giveaway", order = 1)]
 public class Giveaway : ScriptableObject
 {
-    public Sprite sprite;
+    [Header("Basic Information")]
     public string Name;
-    public int Quantity;
-    public string setting;
-    public int GiveawayWeight; // Higher is More common //
-    private bool isPictureChagned; // Weight Free;
-    private bool returnPicture; // Weight Free;
-    public bool isSettings; // Weight Free;
-    public bool isStringSettings; // Weight Free;
-    public bool IsPictureChagned => isPictureChagned; // Weight Free;
-    
-
-    public bool disableChangeName; // Weight Free;
-    public bool disableChangeQuantity; // Weight Free;
     public int ID;
+    public string description;
+    public bool isActive = true;
+
+    [Header("Image Settings")]
+    public Sprite sprite;
+    private bool isPictureChagned;
+    private bool returnPicture;
+    public bool IsPictureChagned => isPictureChagned;
+
+    [Header("Quantity Settings")]
+    public int Quantity;
+    public int GiveawayWeight; // Higher is More common
+    public bool disableChangeQuantity;
+
+    [Header("Category Settings")]
+    public GiveawayCategory category;
+    public int priority; // For sorting within category
+
+    [Header("Additional Settings")]
+    public string setting;
+    public bool isSettings;
+    public bool isStringSettings;
+    public bool disableChangeName;
 
     public void Load()
     {
@@ -63,10 +76,47 @@ public class Giveaway : ScriptableObject
         PlayerPrefs.Save();
     }
     
-    public void LoadPNG(String filePath)
+    public bool LoadPNG(string filePath, ImageConstraintManager constraintManager = null)
     {
-      
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Image file not found: {filePath}");
+            return false;
+        }
 
+        try
+        {
+            byte[] fileData = File.ReadAllBytes(filePath);
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(fileData);
+
+            // If we have a constraint manager, validate and resize the image
+            if (constraintManager != null)
+            {
+                if (!constraintManager.ValidateImage(tex))
+                {
+                    // Try to resize the image to meet constraints
+                    tex = constraintManager.ResizeImage(tex);
+                    if (!constraintManager.ValidateImage(tex))
+                    {
+                        Debug.LogError($"Image does not meet size constraints even after resizing: {filePath}");
+                        return false;
+                    }
+                }
+            }
+
+            // Create sprite from the validated/resized texture
+            sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+            isPictureChagned = true;
+            returnPicture = false;
+            Save();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error loading image: {e.Message}");
+            return false;
+        }
     }
 
     public void ChangeQuantity(int quantity)

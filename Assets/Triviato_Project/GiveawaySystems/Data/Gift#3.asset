@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d5665ecc34843829ba2da4e5d28b, type: 3}
   m_Name: Gift#3
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 7cd4cce2a3412ab44a64de1a715b31c5, type: 3}
+  sprite: {fileID: 21300000, guid: 607744dbb807a96458d2ae3e868dba42, type: 3}
   Name: Coloring Book
   Quantity: 0
   setting: 

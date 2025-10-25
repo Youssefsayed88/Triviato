@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d5665ecc34843829ba2da4e5d28b, type: 3}
   m_Name: Gift#1
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 8940f7dab6215f647b8875d666fee2e3, type: 3}
+  sprite: {fileID: 21300000, guid: 32248feaf3c907d42b68daa89ad10b06, type: 3}
   Name: Key Chain
   Quantity: 2
   setting: 
