@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +6,8 @@ using RTLTMPro;
 using System;
 using Random = UnityEngine.Random;
 using System.Xml;
+using System.Text;
+using System.Reflection;
 
 public class SimpleTriviaManager : MonoBehaviour
 {
@@ -29,6 +31,7 @@ public class SimpleTriviaManager : MonoBehaviour
     [Header("Colors")]
     [SerializeField] private Color correctColor = Color.green;
     [SerializeField] private Color wrongColor = Color.red;
+    [SerializeField] private Color correctNotSelectedColor = Color.blue;
     [SerializeField] private Color normalColor = Color.white;
     
     private List<Question> questions;
@@ -206,17 +209,25 @@ public class SimpleTriviaManager : MonoBehaviour
         
         for (int i = 0; i < answerButtons.Length; i++)
         {
-            string buttonText = answerTexts[i].text;
-            
-            if (buttonText == selectedAnswer)
+            var colors = answerButtons[i].colors;
+            var buttonText = RTLTextMeshProComparer.GetOriginalText(answerTexts[i]);
+            bool isCorrectAnswer = RTLTextMeshProComparer.AreEqual(buttonText, currentQuestion.correct_answer);
+            bool isSelectedAnswer = RTLTextMeshProComparer.AreEqual(buttonText, selectedAnswer);
+
+            if (isSelectedAnswer && isCorrectAnswer)
             {
-                answerButtons[i].image.color = isCorrect ? correctColor : wrongColor;
+                colors.disabledColor = correctColor;
             }
-            else if (buttonText == currentQuestion.correct_answer)
+            else if (isCorrectAnswer && !isSelectedAnswer)
             {
-                answerButtons[i].image.color = correctColor;
+                colors.disabledColor = correctNotSelectedColor;
             }
-            
+            else
+            {
+                colors.disabledColor = wrongColor;
+            }
+
+            answerButtons[i].colors = colors;
             answerButtons[i].interactable = false;
         }
 
@@ -289,5 +300,95 @@ public class SimpleTriviaManager : MonoBehaviour
         correctAnswers = 0;
         currentQuestionIndex = 0;
         isAnswered = false;
+    }
+}
+
+public static class RTLTextMeshProComparer
+{
+    // Optional: remove Arabic diacritics (tashkeel)
+    public static bool IgnoreDiacritics = true;
+
+    private static readonly FieldInfo originalTextField =
+        typeof(RTLTextMeshPro).GetField("originalText", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    /// <summary>
+    /// Compare two raw RTL strings, ignoring invisible marks, Tatweel, normalization, and optionally diacritics.
+    /// </summary>
+    public static bool AreEqual(string a, string b)
+    {
+        if (a == null || b == null)
+            return a == b;
+
+        string normA = NormalizeRTL(a);
+        string normB = NormalizeRTL(b);
+
+        return string.Equals(normA, normB, System.StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Compare two RTLTextMeshPro components by their original (unprocessed) text.
+    /// </summary>
+    public static bool AreEqual(RTLTextMeshPro rtlA, RTLTextMeshPro rtlB)
+    {
+        if (rtlA == null || rtlB == null)
+            return rtlA == rtlB;
+
+        string textA = GetOriginalText(rtlA);
+        string textB = GetOriginalText(rtlB);
+
+        return AreEqual(textA, textB);
+    }
+
+    /// <summary>
+    /// Try to retrieve the original (unprocessed) text from an RTLTextMeshPro component.
+    /// </summary>
+    public static string GetOriginalText(RTLTextMeshPro rtl)
+    {
+        if (rtl == null)
+            return null;
+
+        // Try reflection (fallback method)
+        string reflected = (string)originalTextField?.GetValue(rtl);
+        if (!string.IsNullOrEmpty(reflected))
+            return reflected;
+
+        // Fallback to .text if reflection fails (processed string)
+        return rtl.text;
+    }
+
+    /// <summary>
+    /// Normalize RTL text: unify Unicode form, remove Tatweel, invisible marks, and optionally diacritics.
+    /// </summary>
+    private static string NormalizeRTL(string input)
+    {
+        if (input == null) return null;
+
+        string normalized = input.Normalize(NormalizationForm.FormC);
+
+        // Remove invisible RTL formatting characters
+        normalized = normalized
+            .Replace("\u200F", "") // Right-to-Left Mark
+            .Replace("\u202B", "") // RTL Embedding
+            .Replace("\u202C", "") // Pop Directional Formatting
+            .Replace("\u202A", "") // LTR Embedding
+            .Replace("\u202E", "") // RTL Override
+            .Replace("\u0640", ""); // Tatweel (ـ)
+
+        // Optionally remove diacritics (tashkeel)
+        if (IgnoreDiacritics)
+        {
+            // Arabic diacritics range: 0x0610–0x061A, 0x064B–0x065F
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in normalized)
+            {
+                if ((c >= 0x0610 && c <= 0x061A) ||
+                    (c >= 0x064B && c <= 0x065F))
+                    continue; // skip diacritics
+                sb.Append(c);
+            }
+            normalized = sb.ToString();
+        }
+
+        return normalized;
     }
 }
