@@ -992,7 +992,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "NAMOW TNADNEPEDNI GNORTS \uFE91\uFEB2  ... ..."
+  m_text: "\uFEE3\uFE8E \uFBFE\uFEA0\uFBFF\uFE92\uFEEC\uFE8E \u0627\uFEFB ------------"
   m_isRightToLeft: 1
   m_fontAsset: {fileID: 11400000, guid: 2ee1fc49d34f0864fa60d9a2e286de27, type: 2}
   m_sharedMaterial: {fileID: 2305057469532314264, guid: 2ee1fc49d34f0864fa60d9a2e286de27, type: 2}
@@ -1019,7 +1019,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50.6
+  m_fontSize: 72
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1061,9 +1061,10 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-  preserveNumbers: 0
+  preserveNumbers: 1
   farsi: 1
-  originalText: "STRONG INDEPENDANT WOMAN \u0628\u0633  ... ..."
+  originalText: "\u0645\u0627 \u064A\u062C\u064A\u0628\u0647\u0627 \u0627\u0644\u0627
+    ------------"
   fixTags: 1
   forceFix: 1
 --- !u!222 &1142654406
